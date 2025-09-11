@@ -1,0 +1,61 @@
+{
+  "name": "@jamaalbuilds/lunarcrush-mcp",
+  "version": "1.0.1",
+  "description": "Lightweight SDK for connecting LLMs to LunarCrush social crypto data via Model Context Protocol (MCP)",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "lunarcrush",
+    "mcp",
+    "model-context-protocol",
+    "crypto",
+    "cryptocurrency",
+    "social-data",
+    "llm",
+    "ai",
+    "bitcoin",
+    "openai",
+    "anthropic",
+    "google",
+    "gemini",
+    "function-calling",
+    "sentiment",
+    "trading"
+  ],
+  "author": "Danilo Jamaal <danilobatson19@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/danilobatson/lunarcrush-mcp-sdk#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danilobatson/lunarcrush-mcp-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/danilobatson/lunarcrush-mcp-sdk/issues"
+  },
+  "peerDependencies": {
+    "@modelcontextprotocol/sdk": ">=0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "@jamaalbuilds/lunarcrush-mcp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Lightweight SDK for connecting LLMs to LunarCrush social crypto data via Model Context Protocol (MCP)",
   "type": "module",
   "main": "dist/index.js",

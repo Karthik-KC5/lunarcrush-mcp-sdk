@@ -3,14 +3,14 @@
 [![npm version](https://badge.fury.io/js/%40jamaalbuilds%2Flunarcrush-mcp.svg)](https://badge.fury.io/js/%40jamaalbuilds%2Flunarcrush-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Lightweight SDK for connecting LLMs to LunarCrush social crypto data via Model Context Protocol (MCP).
+Lightweight, LLM-agnostic SDK for connecting any LLM to LunarCrush social crypto data via Model Context Protocol (MCP).
 
 ## 🚀 Features
 
 - **Zero Configuration** - Just your API key and you're ready
 - **100% Dynamic** - Auto-discovers tools, future-proof against changes
-- **LLM Agnostic** - Works with OpenAI, Anthropic, Google, any LLM provider
-- **Lightweight** - Minimal dependencies, won't bloat your project
+- **LLM Agnostic** - Raw schemas, you format for your LLM choice
+- **Lightweight** - Minimal dependencies, zero maintenance needed
 - **TypeScript Ready** - Full type safety and IntelliSense support
 
 ## 📦 Installation
@@ -28,9 +28,9 @@ import LunarCrushMCP from '@jamaalbuilds/lunarcrush-mcp';
 const mcp = new LunarCrushMCP('your-api-key');
 await mcp.connect();
 
-// 2. Let your LLM discover tools
-const tools = mcp.getTools();
-// LLM can now see all available tools and their schemas
+// 2. Get tools for your LLM
+const tools = mcp.getToolsWithDetails();
+// Raw schemas - you format for your LLM
 
 // 3. LLM calls tools through SDK
 const result = await mcp.callTool('Topic', { topic: 'bitcoin' });
@@ -51,8 +51,13 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const mcp = new LunarCrushMCP(process.env.LUNARCRUSH_API_KEY);
 await mcp.connect();
 
-// Get function definitions for OpenAI
-const functions = mcp.getOpenAIFunctions();
+// Format tools for OpenAI (you control the formatting)
+const tools = mcp.getToolsWithDetails();
+const functions = tools.map(tool => ({
+  name: tool.name,
+  description: tool.description,
+  parameters: tool.schema
+}));
 
 const response = await openai.chat.completions.create({
   model: 'gpt-4',
@@ -79,8 +84,13 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const mcp = new LunarCrushMCP(process.env.LUNARCRUSH_API_KEY);
 await mcp.connect();
 
-// Get tool definitions for Anthropic
-const tools = mcp.getAnthropicTools();
+// Format tools for Anthropic (you control the formatting)
+const toolsData = mcp.getToolsWithDetails();
+const tools = toolsData.map(tool => ({
+  name: tool.name,
+  description: tool.description,
+  input_schema: tool.schema
+}));
 
 const response = await anthropic.messages.create({
   model: 'claude-3-sonnet-20240229',
@@ -108,21 +118,49 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const mcp = new LunarCrushMCP(process.env.LUNARCRUSH_API_KEY);
 await mcp.connect();
 
-// Create prompt with available tools
-const tools = mcp.getTools();
-const toolList = tools.map(t => `${t.name}: ${t.description}`).join('\n');
+// Get detailed tool information for better LLM understanding
+const toolsData = mcp.getToolsWithDetails();
+
+const prompt = `You are a crypto analyst with access to LunarCrush tools.
+
+AVAILABLE TOOLS:
+${toolsData.map(tool => {
+  const { name, description, parameterInfo } = tool;
+  return `${name}: ${description}
+  Required parameters: ${parameterInfo.required.join(', ') || 'none'}
+  Optional parameters: ${parameterInfo.optional.join(', ') || 'none'}
+  Parameter types: ${JSON.stringify(parameterInfo.types)}
+  Enum values: ${JSON.stringify(parameterInfo.enums)}`;
+}).join('\n\n')}
+
+Task: Analyze Bitcoin's current performance and social sentiment.
+Choose appropriate tools with EXACT parameter formatting.
+
+CRITICAL:
+- Use arrays for array parameters: ["item1", "item2"]
+- Use exact enum values from the options provided
+- Follow parameter types precisely
+
+Respond with JSON:
+{
+  "selected_tools": [
+    {
+      "name": "exact_tool_name",
+      "arguments": {exact_arguments_with_proper_types},
+      "reasoning": "why you chose this tool"
+    }
+  ]
+}`;
 
 const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-const prompt = `
-You have access to these LunarCrush tools:
-${toolList}
-
-Analyze Bitcoin's market performance and social sentiment.
-Choose the best tools and provide their exact arguments.
-`;
-
 const result = await model.generateContent(prompt);
-// Parse LLM response and execute chosen tools
+
+// Parse and execute chosen tools
+const response = JSON.parse(result.response.text());
+for (const choice of response.selected_tools) {
+  const toolResult = await mcp.callTool(choice.name, choice.arguments);
+  console.log(`${choice.name} result:`, toolResult);
+}
 ```
 
 ## 📋 Available Methods
@@ -137,15 +175,10 @@ const status = mcp.getStatus();   // Get connection status
 
 ### Tool Discovery
 ```typescript
-const tools = mcp.getTools();           // Get all tools with schemas
-const tool = mcp.getTool('Topic');      // Get specific tool schema
-await mcp.refreshTools();               // Refresh tool list (if MCP updates)
-```
-
-### LLM Integration
-```typescript
-const openAIFunctions = mcp.getOpenAIFunctions();    // OpenAI format
-const anthropicTools = mcp.getAnthropicTools();      // Anthropic format
+const tools = mcp.getTools();              // Get basic tools with schemas
+const detailedTools = mcp.getToolsWithDetails();  // Get enhanced tool info for LLMs
+const tool = mcp.getTool('Topic');         // Get specific tool schema
+await mcp.refreshTools();                  // Refresh tool list (if MCP updates)
 ```
 
 ### Tool Execution
@@ -175,20 +208,57 @@ The SDK dynamically discovers all available tools from the LunarCrush MCP server
 - **Creator** - Social media creator analysis
 - **And more...** (auto-discovered)
 
+## 📝 Enhanced Tool Information
+
+The `getToolsWithDetails()` method provides LLM-friendly tool information:
+
+```typescript
+const toolsData = mcp.getToolsWithDetails();
+console.log(toolsData[0]);
+/*
+{
+  name: "Topic_Time_Series",
+  description: "Get historical time series metrics...",
+  schema: {
+    type: "object",
+    properties: { ... },
+    required: ["topic"]
+  },
+  parameterInfo: {
+    required: ["topic"],
+    optional: ["metrics", "interval"],
+    types: {
+      topic: "string",
+      metrics: "array",
+      interval: "enum"
+    },
+    enums: {
+      interval: ["1d", "1w", "1m", "3m", "6m", "1y", "all"]
+    }
+  }
+}
+*/
+```
+
+This enhanced information helps LLMs understand:
+- Which parameters are required vs optional
+- Exact parameter types (string, array, enum, etc.)
+- Valid enum values for better accuracy
+
 ## 🔒 Error Handling
 
-The SDK passes through all MCP server errors with proper validation messages:
+The SDK passes through all MCP server errors with detailed validation messages:
 
 ```typescript
 try {
   const result = await mcp.callTool('Topic_Time_Series', {
     topic: 'bitcoin',
-    metrics: 'price,volume',  // ❌ Should be array
-    interval: 'day'           // ❌ Should be '1d', '1w', etc.
+    metrics: 'price,volume',  // ❌ Should be array: ['price', 'volume']
+    interval: 'day'           // ❌ Should be '1d', not 'day'
   });
 } catch (error) {
   console.error('MCP validation error:', error.message);
-  // Error will show exactly what's wrong with parameters
+  // Error shows exactly what's wrong with parameters
 }
 ```
 
@@ -204,11 +274,20 @@ const tools: MCPTool[] = mcp.getTools();
 const result: MCPToolResult = await mcp.callTool('Topic', { topic: 'bitcoin' });
 ```
 
+## 🎯 Design Philosophy
+
+This SDK is intentionally minimal and LLM-agnostic:
+
+- **No LLM-specific formatting** - You control how to format schemas for your LLM
+- **No maintenance burden** - SDK just passes through what MCP provides
+- **Future-proof** - Works with any current or future LLM provider
+- **Zero assumptions** - Doesn't assume we know how LLMs will evolve
+
 ## 🚀 Get Started
 
 1. **Get LunarCrush API Key**: [lunarcrush.com/developers/api](https://lunarcrush.com/developers/api)
 2. **Install the SDK**: `npm install @jamaalbuilds/lunarcrush-mcp`
-3. **Connect your LLM**: Use examples above for your LLM provider
+3. **Format tools for your LLM**: Use examples above for your LLM provider
 4. **Start analyzing**: Your LLM now has access to real-time crypto social data!
 
 ## 📖 Documentation

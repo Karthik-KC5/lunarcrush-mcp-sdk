@@ -152,7 +152,7 @@ Respond with JSON:
   ]
 }`;
 
-const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-lite' });
 const result = await model.generateContent(prompt);
 
 // Parse and execute chosen tools

